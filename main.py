@@ -3,9 +3,9 @@ from pydantic import BaseModel
 import pandas as pd
 import numpy as np
 from typing import Optional,List
-from app.model.model import train,load_model
+from app.model.model import train,load_model,normalize_amenities_str
 app= FastAPI(title='Airbnb Price Prediction')
-model = load_model()
+model = None
 class reqpredict(BaseModel):
     accommodates : Optional[List[Optional[float]]] = None
     bathrooms : Optional[List[Optional[float]]] = None
@@ -25,12 +25,13 @@ class reqpredict(BaseModel):
     host_has_profile_pic: Optional[List[Optional[str]]] = None
     host_identity_verified: Optional[List[Optional[str]]] = None
     host_response_rate: Optional[List[Optional[str]]] = None
-    instant_bookabl: Optional[List[Optional[str]]] = None
+    instant_bookable: Optional[List[Optional[str]]] = None
 
-@app.health('/health')
+@app.get('/health')
 def health():
     return {'status' : 'ok'}
 
+@app.post('/predict')
 def predict(req:reqpredict):
     global model
     if model == None:
@@ -42,7 +43,11 @@ def predict(req:reqpredict):
                        'amenities' : req.amenities,'bed_type' : req.bed_type,'cancellation_policy' : req.cancellation_policy,
                        'cleaning_fee' : req.cleaning_fee, 'city' : req.city,'host_has_profile_pic' : req.host_has_profile_pic,
                        'host_identity_verified' : req.host_identity_verified, 'host_response_rate' : req.host_response_rate,
-                       'instant_bookabl' : req.instant_bookabl
+                       'instant_bookable' : req.instant_bookable
                        })
+    
+    if "amenities" in df.columns:
+            df["amenities"] = df["amenities"].apply(normalize_amenities_str)
+
     ypred = model.predict(df)
     return {"predictions" : ypred.tolist()}
