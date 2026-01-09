@@ -2,17 +2,16 @@
 import streamlit as st
 import requests
 import pandas as pd
+import math
 
 API_BASE = "http://127.0.0.1:8000"
 
 st.set_page_config(page_title="Regressão FastAPI — Uma amostra", layout="centered")
-st.title("Predição (uma amostra) — FastAPI + Streamlit")
+st.title("Predição — FastAPI + Streamlit")
 
 st.markdown("""
 Preencha os campos abaixo para **uma única amostra**.
-O app enviará **apenas** as colunas esperadas pelo backend:
-- Numéricas: `accommodates, bathrooms, latitude, longitude, number_of_reviews, review_scores_rating, bedrooms, beds`
-- Categóricas (strings): `property_type, room_type, amenities, bed_type, cancellation_policy, cleaning_fee, city, host_has_profile_pic, host_identity_verified, host_response_rate, instant_bookable`
+O app envia **apenas** as colunas esperadas pelo backend.
 """)
 
 # === Helpers ===
@@ -71,33 +70,32 @@ with st.form("single_sample_form"):
 
     # Defaults inspirados em exemplo NYC/Manhattan
     with col1:
-        accommodates = st.text_input("accommodates (int)", value="4")
-        bathrooms = st.text_input("bathrooms (float)", value="1.0")
-        latitude = st.text_input("latitude (float)", value="40.754321")
-        longitude = st.text_input("longitude (float)", value="-73.983210")
-        number_of_reviews = st.text_input("number_of_reviews (int)", value="15")
-        review_scores_rating = st.text_input("review_scores_rating (float)", value="96")
-        bedrooms = st.text_input("bedrooms (int)", value="2")
-        beds = st.text_input("beds (int)", value="2")
+        accommodates = st.text_input("accommodates ex:", value="4")
+        bathrooms = st.text_input("bathrooms ex:", value="1.0")
+        latitude = st.text_input("latitude ex:", value="40.754321")
+        longitude = st.text_input("longitude ex:", value="-73.983210")
+        number_of_reviews = st.text_input("number_of_reviews ex:", value="15")
+        review_scores_rating = st.text_input("review_scores_rating ex:", value="96")
+        bedrooms = st.text_input("bedrooms ex:", value="2")
+        beds = st.text_input("beds ex:", value="2")
 
     with col2:
-        property_type = st.selectbox("property_type (str)", ["Apartment", "House", "Condominium", "Loft", "Other"], index=0)
-        room_type = st.selectbox("room_type (str)", ["Entire home/apt", "Private room", "Shared room", "Hotel room"], index=0)
+        property_type = st.selectbox("property_type ", ["Apartment", "House", "Condominium", "Loft", "Other"], index=0)
+        room_type = st.selectbox("room_type ", ["Entire home/apt", "Private room", "Shared room", "Hotel room"], index=0)
         amenities = st.text_input(
-            "amenities",
+            "amenities ex:",
             value='{"Wireless Internet","Air conditioning",Kitchen,Heating,"Family/kid friendly",Essentials,"Hair dryer",Iron,"Smoke detector","Fire extinguisher"}'
         )
+        bed_type = st.selectbox("bed_type ", ["Real Bed", "Pull-out Sofa", "Futon", "Airbed", "Couch"], index=0)
+        cancellation_policy = st.selectbox("cancellation_policy ", ["flexible", "moderate", "strict", "super_strict_30"], index=0)
+        cleaning_fee_bool = st.checkbox("cleaning_fee')", value=True)
+        city = st.text_input("city ex:", value="NYC")
+        host_has_profile_pic_bool = st.checkbox("host_has_profile_pic ", value=True)
+        host_identity_verified_bool = st.checkbox("host_identity_verified ", value=True)
+        host_response_rate_raw = st.text_input("host_response_rate ex:", value="95%")
+        instant_bookable_bool = st.checkbox("instant_bookable ex:", value=True)
 
-        bed_type = st.selectbox("bed_type (str)", ["Real Bed", "Pull-out Sofa", "Futon", "Airbed", "Couch"], index=0)
-        cancellation_policy = st.selectbox("cancellation_policy (str)", ["flexible", "moderate", "strict", "super_strict_30"], index=0)
-        cleaning_fee_bool = st.checkbox("cleaning_fee (bool → será enviado como string 'True'/'False')", value=True)
-        city = st.text_input("city (str)", value="NYC")
-        host_has_profile_pic_bool = st.checkbox("host_has_profile_pic (bool → será enviado como 't'/'f')", value=True)
-        host_identity_verified_bool = st.checkbox("host_identity_verified (bool → será enviado como 't'/'f')", value=True)
-        host_response_rate_raw = st.text_input("host_response_rate (string: ex. '95%' ou '0.95')", value="95%")
-        instant_bookable_bool = st.checkbox("instant_bookable (bool → será enviado como 't'/'f')", value=True)
-
-    submit = st.form_submit_button("Prever")
+    submit = st.form_submit_button("Predict")
 
 if submit:
     # === Conversões numéricas ===
@@ -155,17 +153,18 @@ if submit:
     # === Chamada ===
     try:
         r = requests.post(f"{API_BASE}/predict", json=payload, timeout=60)
-
-        st.markdown("### Debug do Payload Enviado")
-        st.code(pd.DataFrame(payload).to_string(index=False), language="text")
-
         if r.status_code == 200:
             out = r.json()
             preds = out.get("predictions", [])
-            st.success("Predição realizada com sucesso.")
-            df_show = pd.DataFrame({k: [v[0]] for k, v in payload.items()})
-            df_show["y_pred"] = preds if isinstance(preds, list) else [preds]
-            st.dataframe(df_show, use_container_width=True)
+            # Mostra somente o valor predito
+            if isinstance(preds, list) and len(preds) > 0:
+                y_pred = float(preds[0])
+                # Se quiser converter de log_price para price:
+                # price = math.exp(y_pred)
+                # st.metric(label="Preço previsto (R$)", value=f"{price:,.2f}")
+                st.metric(label="Valor previsto", value=f"{y_pred:,.4f}")
+            else:
+                st.warning("Resposta da API não contém 'predictions'.")
         else:
             st.error(f"Falha na predição ({r.status_code}): {r.text}")
     except Exception as e:
