@@ -1,4 +1,4 @@
-🏠 Airbnb Price Prediction: End-to-End
+# 🏠 Airbnb Price Prediction: End-to-End
 Este projeto é uma solução completa de Machine Learning para a predição de preços de aluguéis do Airbnb. Ele engloba desde o processamento de dados e treinamento do modelo até a disponibilização de uma API (FastAPI) e uma interface de usuário (Streamlit).
 
 O modelo utiliza um algoritmo de Gradient Boosting Regressor para prever o logaritmo do preço (log_price) com base em características como localização, tipo de propriedade, comodidades e avaliações.
