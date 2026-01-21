@@ -3,7 +3,7 @@ Este projeto é uma solução completa de Machine Learning para a predição de 
 
 O modelo utiliza um algoritmo de Gradient Boosting Regressor para prever o logaritmo do preço (log_price) com base em características como localização, tipo de propriedade, comodidades e avaliações.
 
-📁 Estrutura do Projeto
+## 📁 Estrutura do Projeto
 Conforme a organização do diretório:
 ├── app/
 │   ├── data/
@@ -17,7 +17,7 @@ Conforme a organização do diretório:
 ├── requirements.txt           # Dependências do projeto
 └── README.md
 
-🚀 Tecnologias Utilizadas
+## 🚀 Tecnologias Utilizadas
 Python 3.9+
 Scikit-Learn: Pipelines, pré-processamento e Gradient Boosting.
 Pandas & Numpy: Manipulação de dados.
@@ -25,7 +25,7 @@ FastAPI: Criação da API de predição.
 Streamlit: Interface frontend intuitiva.
 Joblib: Persistência do modelo treinado.
 
-🛠️ Como Executar o Projeto. 
+## 🛠️ Como Executar o Projeto. 
 Clonar o repositório e Instalar Dependências
 ```
 bash
@@ -47,7 +47,7 @@ bash
 streamlit run streamlit_app.py
 ```
 
-🧠 Detalhes do Modelo
+## 🧠 Detalhes do Modelo
 O pipeline de dados foi desenhado para lidar com diferentes tipos de variáveis:
 
 Numéricas: Preenchimento de valores ausentes pela mediana e padronização (StandardScaler). Inclui accommodates, bathrooms, latitude, longitude, entre outras.
@@ -56,7 +56,7 @@ Categóricas: Preenchimento com o valor mais frequente e codificação via OneHo
 
 Amenities: Uma função customizada de normalização limpa e ordena as strings de comodidades para garantir consistência entre o treino e a predição.
 
-📬 Endpoints da API
+## 📬 Endpoints da API
 Método,Endpoint,Descrição
 GET,/health,Verifica se a API está online.
 POST,/predict,Recebe os dados do imóvel e retorna a predição do log_price.
