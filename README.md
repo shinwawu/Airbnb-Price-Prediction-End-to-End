@@ -4,19 +4,20 @@ Este projeto é uma solução completa de Machine Learning para a predição de 
 O modelo utiliza um algoritmo de Gradient Boosting Regressor para prever o logaritmo do preço (log_price) com base em características como localização, tipo de propriedade, comodidades e avaliações.
 
 ## 📁 Estrutura do Projeto
-Conforme a organização do diretório:
-├── app/
+```├── app/
 │   ├── data/
-│   │   └── raw_data.csv       # Dataset original
+│   │   └── raw_data.csv       # Dataset original para treino
 │   ├── model/
 │   │   ├── model.py           # Pipeline de ML e lógica de treino
-│   │   └── regressor.pkl      # Modelo serializado (gerado após treino)
-│   └── notebooks/             # Análise exploratória e prototipagem
-├── main.py                    # API FastAPI
-├── streamlit_app.py           # Interface Web Streamlit
-├── requirements.txt           # Dependências do projeto
-└── README.md
-
+│   │   └── regressor.pkl      # Modelo serializado (.pkl)
+│   └── notebooks/
+│       ├── 00-eda.ipynb       # Análise Exploratória de Dados
+│       └── 01-data_model.ipynb # Prototipagem do modelo
+├── main.py                    # API principal com FastAPI
+├── streamlit_app.py           # Interface Frontend Streamlit
+├── .gitignore                 # Arquivos ignorados pelo Git
+└── README.md                  # Documentação do projeto
+```
 ## 🚀 Tecnologias Utilizadas
 Python 3.9+
 Scikit-Learn: Pipelines, pré-processamento e Gradient Boosting.
@@ -69,7 +70,7 @@ Exemplo de Payload (JSON):
   "amenities": ["{Wifi,Kitchen}"]
 }
 
-📝 Notas Adicionais
+## 📝 Notas Adicionais
 Target: O modelo prevê o valor em logaritmo. No streamlit_app.py, você pode descomentar a linha math.exp(y_pred) para visualizar o valor real em moeda.
 
 Treinamento: O treinamento é engatilhado via API caso o arquivo .pkl não seja encontrado, utilizando o raw_data.csv presente na pasta data.
