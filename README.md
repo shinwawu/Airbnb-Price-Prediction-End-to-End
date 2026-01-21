@@ -4,7 +4,8 @@ Este projeto é uma solução completa de Machine Learning para a predição de 
 O modelo utiliza um algoritmo de Gradient Boosting Regressor para prever o logaritmo do preço (log_price) com base em características como localização, tipo de propriedade, comodidades e avaliações.
 
 ## 📁 Estrutura do Projeto
-```├── app/
+```
+├── app/
 │   ├── data/
 │   │   └── raw_data.csv       # Dataset original para treino
 │   ├── model/
@@ -15,8 +16,10 @@ O modelo utiliza um algoritmo de Gradient Boosting Regressor para prever o logar
 │       └── 01-data_model.ipynb # Prototipagem do modelo
 ├── main.py                    # API principal com FastAPI
 ├── streamlit_app.py           # Interface Frontend Streamlit
-├── .gitignore                 # Arquivos ignorados pelo Git
-└── README.md                  # Documentação do projeto
+├── requirements.txt           # Dependências do projeto
+├── Dockerfile                 # Configuração da imagem Docker
+├── docker-compose.yml         # Orquestração dos containers
+└── README.md                  # Documentação
 ```
 ## 🚀 Tecnologias Utilizadas
 Python 3.9+
@@ -25,6 +28,7 @@ Pandas & Numpy: Manipulação de dados.
 FastAPI: Criação da API de predição.
 Streamlit: Interface frontend intuitiva.
 Joblib: Persistência do modelo treinado.
+Docker & Docker Compose: Para containerização e deploy simplificado.
 
 ## 🛠️ Como Executar o Projeto. 
 Clonar o repositório e Instalar Dependências
@@ -34,14 +38,27 @@ git clone https://github.com/seu-usuario/airbnb-price-prediction.git
 cd airbnb-price-prediction
 pip install -r requirements.txt
 ```
-2. Executar a API (Backend)
+
+Como Executar com Docker
+Certifique-se de ter o Docker instalado.
+```
+bash
+docker-compose up --build
+```
+
+Acesse:
+Interface Web (Streamlit): http://localhost:8501
+
+Como executar sem Docker
+
+1.Executar a API (Backend)
 A API é responsável por carregar o modelo e processar as requisições de predição. Se o modelo (regressor.pkl) não existir, o sistema executará o treino automaticamente no primeiro acesso.
 ```
 bash
 uvicorn main:app --reload
 ```
 
-3. Executar o Streamlit (Frontend)
+2. Executar o Streamlit (Frontend)
 Em um novo terminal, execute a interface visual:
 ```
 bash
